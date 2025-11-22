@@ -129,7 +129,7 @@ ${fileListHtml}
   </body>
 </html>`;
 
-const indexDir = path.join(__dirname, 'index');
+const indexDir = path.join(__dirname, 'files');
 fs.mkdirSync(indexDir, { recursive: true });
 fs.writeFileSync(path.join(indexDir, 'index.html'), html);
 
