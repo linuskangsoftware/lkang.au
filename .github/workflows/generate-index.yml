@@ -1,0 +1,36 @@
+name: Generate File Index
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Run index generator
+      run: node generate-index.js
+
+    - name: Commit and push changes
+      env:
+        PERSONAL_TOKEN: ${{ secrets.LINUS_PAT_FOR_ACTIONS }}
+      run: |
+        git config user.name "linuskang"
+        git config user.email "linus@kang.id.au"
+        git remote set-url origin https://x-access-token:${PERSONAL_TOKEN}@github.com/${{ github.repository }}.git
+        git add index/
+        git diff --staged --quiet || git commit -m "Auto-generate file index"
+        git push origin HEAD:main || echo "No changes to push"
